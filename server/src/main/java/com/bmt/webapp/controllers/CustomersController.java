@@ -3,6 +3,7 @@ package com.bmt.webapp.controllers;
 import com.bmt.webapp.models.Customer;
 import com.bmt.webapp.models.CustomerDto;
 import com.bmt.webapp.models.ErrorResponse;
+import com.bmt.webapp.models.SuccessResponse;
 import jakarta.validation.Valid;
 import com.bmt.webapp.repositories.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,12 @@ public class CustomersController {
                     .buildAndExpand(savedCustomer.getId())
                     .toUri();
             
-            return ResponseEntity.created(location).body(savedCustomer);
+            SuccessResponse successResponse = new SuccessResponse(
+                "Customer created successfully!", 
+                savedCustomer
+            );
+            
+            return ResponseEntity.created(location).body(successResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                 .body(new ErrorResponse("Failed to create customer: " + e.getMessage()));
@@ -116,7 +122,11 @@ public class CustomersController {
             existingCustomer.setStatus(customerDto.getStatus());
 
             Customer updatedCustomer = customerRepo.save(existingCustomer);
-            return ResponseEntity.ok(updatedCustomer);
+            SuccessResponse successResponse = new SuccessResponse(
+                "Customer updated successfully!", 
+                updatedCustomer
+            );
+            return ResponseEntity.ok(successResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                 .body(new ErrorResponse("Failed to update customer: " + e.getMessage()));
@@ -124,13 +134,17 @@ public class CustomersController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable int id) {
+    public ResponseEntity<?> deleteCustomer(@PathVariable int id) {
         Optional<Customer> customer = customerRepo.findById(id);
         if (customer.isPresent()) {
             customerRepo.delete(customer.get());
-            return ResponseEntity.noContent().build();
+            SuccessResponse successResponse = new SuccessResponse(
+                "Customer deleted successfully!"
+            );
+            return ResponseEntity.ok(successResponse);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("Customer not found with ID: " + id));
         }
     }
 }
