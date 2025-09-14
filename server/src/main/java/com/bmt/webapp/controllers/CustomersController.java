@@ -87,7 +87,7 @@ public class CustomersController {
         try {
             Optional<Customer> existingCustomerOpt = customerRepo.findById(id);
             if (!existingCustomerOpt.isPresent()) {
-                return ResponseEntity.notFound()
+                return ResponseEntity.status(404)
                     .body(new ErrorResponse("Customer not found"));
             }
 
@@ -119,7 +119,7 @@ public class CustomersController {
             return ResponseEntity.ok(updatedCustomer);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
-                .body(Map.of("error", "Failed to update customer: " + e.getMessage()));
+                .body(new ErrorResponse("Failed to update customer: " + e.getMessage()));
         }
     }
 
