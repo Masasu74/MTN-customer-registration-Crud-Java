@@ -52,7 +52,7 @@ public class CustomersController {
             // Check age requirement (16 and above)
             if (!customerDto.isValidAge()) {
                 return ResponseEntity.badRequest()
-                    .body(new ErrorResponse("Customer must be 16 years or older", "dateOfBirth"));
+                    .body(new ErrorResponse("Customer must be 16 years or older", "dateOfBirth "));
             }
 
             Customer customer = new Customer();
