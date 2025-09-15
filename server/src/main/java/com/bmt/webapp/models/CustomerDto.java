@@ -1,6 +1,8 @@
 package com.bmt.webapp.models;
 
 import jakarta.validation.constraints.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class CustomerDto {
 
@@ -15,6 +17,8 @@ public class CustomerDto {
     private String email;
 
     private String phone;
+    
+    @NotEmpty(message = "Date of Birth is required")
     private String dateOfBirth;
     private String address;
     private String city;
@@ -130,5 +134,22 @@ public class CustomerDto {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    // Custom validation method for age requirement
+    public boolean isValidAge() {
+        if (dateOfBirth == null || dateOfBirth.trim().isEmpty()) {
+            return false;
+        }
+        
+        try {
+            LocalDate birthDate = LocalDate.parse(dateOfBirth);
+            LocalDate currentDate = LocalDate.now();
+            LocalDate minimumDate = currentDate.minusYears(16);
+            
+            return birthDate.isBefore(minimumDate) || birthDate.isEqual(minimumDate);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 }

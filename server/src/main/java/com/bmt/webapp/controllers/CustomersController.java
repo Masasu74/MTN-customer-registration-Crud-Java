@@ -49,6 +49,12 @@ public class CustomersController {
                     .body(new ErrorResponse("Email already exists", "email"));
             }
 
+            // Check age requirement (16 and above)
+            if (!customerDto.isValidAge()) {
+                return ResponseEntity.badRequest()
+                    .body(new ErrorResponse("Customer must be 16 years or older", "dateOfBirth"));
+            }
+
             Customer customer = new Customer();
             customer.setFirstName(customerDto.getFirstName());
             customer.setLastName(customerDto.getLastName());
@@ -104,6 +110,12 @@ public class CustomersController {
                 customerRepo.findByEmail(customerDto.getEmail()) != null) {
                 return ResponseEntity.badRequest()
                     .body(new ErrorResponse("Email already exists", "email"));
+            }
+
+            // Check age requirement (16 and above)
+            if (!customerDto.isValidAge()) {
+                return ResponseEntity.badRequest()
+                    .body(new ErrorResponse("Customer must be 16 years or older", "dateOfBirth"));
             }
 
             // Update the existing customer

@@ -42,3 +42,4 @@ public class SuccessResponse {
         this.data = data;
     }
 }
+
